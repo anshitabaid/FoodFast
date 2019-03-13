@@ -50,15 +50,15 @@ public class Home extends JFrame {
 		panel.setBounds(12, 24, 426, 271);
 		contentPane.add(panel);
 		panel.setLayout(null);
+		
+				txtPassword = new JPasswordField();
+				txtPassword.setBounds(154, 105, 117, 19);
+				panel.add(txtPassword);
 
 		JLabel lblPhno = new JLabel("Phone Number");
-		lblPhno.setHorizontalAlignment(SwingConstants.TRAILING);
+		lblPhno.setHorizontalAlignment(SwingConstants.LEFT);
 		lblPhno.setBounds(154, 12, 158, 25);
 		panel.add(lblPhno);
-
-		txtPassword = new JPasswordField();
-		txtPassword.setBounds(154, 105, 117, 19);
-		panel.add(txtPassword);
 
 		txtPhno = new JTextField();
 		txtPhno.setBounds(154, 49, 114, 19);
@@ -71,9 +71,9 @@ public class Home extends JFrame {
 		panel.add(btnSearch);
 
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(154, 107, 133, 17);
+		lblPassword.setBounds(154, 76, 133, 17);
 		panel.add(lblPassword);
-		
+
 		JLabel lblData = new JLabel("");
 		lblData.setBounds(79, 214, 297, 25);
 		panel.add(lblData);
@@ -88,14 +88,23 @@ public class Home extends JFrame {
 					Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM",
 							"16181618");
 					// create statement
-					Statement stmt = con.createStatement();
-					ResultSet rs = stmt.executeQuery("SELECT * FROM users where phone_num = "+phno);
-					while (rs.next ()) {
-						System.out.println ("Not empty");
-						System.out.println (rs.getString("name"));
-						//lblData.setText(rs.getString("phone_num") + " " + rs.getString ("name"));
+					Statement stmt = con.createStatement(
+						    ResultSet.TYPE_SCROLL_INSENSITIVE,
+						    ResultSet.CONCUR_READ_ONLY
+						);
+					ResultSet rs = stmt.executeQuery(
+							"SELECT * FROM users where phone_num = " + phno + " and password = '" + password + "'");
+					if (!rs.next()) {
+						System.out.println("Incorrect credientials");
+					} else {
+						// reset to first row
+						rs.beforeFirst();
+						while (rs.next()) {
+							System.out.println("Not empty");
+							System.out.println(rs.getString("name"));
+							// lblData.setText(rs.getString("phone_num") + " " + rs.getString ("name"));
+						}
 					}
-					
 
 					con.commit();
 					con.close();
@@ -107,4 +116,5 @@ public class Home extends JFrame {
 			}
 		});
 
-}}
+	}
+}
