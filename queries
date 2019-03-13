@@ -1,0 +1,6 @@
+create table users 
+(phone_num varchar (10) primary key,
+name varchar (20),
+address varchar (30),
+password varchar (10)
+);
