@@ -4,3 +4,17 @@ name varchar (20),
 address varchar (30),
 password varchar (10)
 );
+
+create table restaurant (r_id number (10) primary key, 
+r_name varchar  (20),
+address varchar (30),
+open_time date, 
+close_time date);
+
+insert into restaurant values (1, 'Dollops', 'Tiger Circle', '17 feb 2013', '18 feb 2018');
+
+insert into restaurant values (2, 'Hadiqa', 'Tiger Circle', '17 feb 2013', '18 feb 2018');
+
+create table cuisine (c_name varchar (10) primary key);
+insert into cuisine values ('Indian');
+insert into cuisine values ('Italian');
