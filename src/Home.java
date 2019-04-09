@@ -75,7 +75,8 @@ public class Home extends JFrame {
 		panel.add(lblPassword);
 
 		JLabel lblData = new JLabel("");
-		lblData.setBounds(79, 214, 297, 25);
+		lblData.setHorizontalAlignment(SwingConstants.CENTER);
+		lblData.setBounds(72, 234, 297, 25);
 		panel.add(lblData);
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -95,14 +96,15 @@ public class Home extends JFrame {
 					ResultSet rs = stmt.executeQuery(
 							"SELECT * FROM users where phone_num = " + phno + " and password = '" + password + "'");
 					if (!rs.next()) {
-						System.out.println("Incorrect credientials");
+						lblData.setText("Incorrect credentials");
 					} else {
 						// reset to first row
 						rs.beforeFirst();
 						while (rs.next()) {
-							System.out.println("Not empty");
-							System.out.println(rs.getString("name"));
-							// lblData.setText(rs.getString("phone_num") + " " + rs.getString ("name"));
+							lblData.setText("Successful");
+							setVisible (false);
+							Listing obj = new Listing ();
+							obj.setVisible (true);
 						}
 					}
 
