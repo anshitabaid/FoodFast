@@ -79,7 +79,7 @@ public class Landing extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Landing(User user,String r, String c) {
+	public Landing(User user, String r, String c) {
 		this.user = user;
 		restaurant = r;
 		cuisine = c;
@@ -90,7 +90,7 @@ public class Landing extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		JButton btnSearch = new JButton("");
-		
+
 		btnSearch.setBounds(215, 91, 40, 40);
 		contentPane.add(btnSearch);
 		// adding icon to search button
@@ -102,7 +102,6 @@ public class Landing extends JFrame {
 		} catch (Exception ex) {
 			System.out.println(ex);
 		}
-		
 
 		JLabel lblCuisine = new JLabel("Search by Cuisine");
 		lblCuisine.setBounds(262, 35, 126, 15);
@@ -132,38 +131,42 @@ public class Landing extends JFrame {
 			// sets first entry to null
 			cuisineList.setSelectedIndex(-1);
 			con.commit();
-			con.close ();
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//action for search button
+		// action for search button
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				restaurant = tfName.getText ();
+				restaurant = tfName.getText();
 				cuisine = cuisineList.getItemAt(cuisineList.getSelectedIndex());
-				if (cuisine == null)	cuisine = "";
-				Landing frame2 = new Landing (user, restaurant, cuisine);
-				frame2.setVisible (true);
+				if (cuisine == null)
+					cuisine = "";
+				Landing frame2 = new Landing(user, restaurant, cuisine);
+				frame2.setVisible(true);
 				dispose();
 			}
 		});
 		// prepare query
 		String query;
-		System.out.println (restaurant);
-		if (restaurant.equals("") && cuisine.equals(""))
-		{
+		System.out.println(restaurant);
+		if (restaurant.equals("") && cuisine.equals("")) {
 			// populate all restaurants
 			query = "select r_name from restaurant";
-		}
-		else if (!restaurant.equals("") && !cuisine.equals(""))
-			query = "with rids (id) as (select r_id from restaurant_cuisine where cuisine = '" + cuisine + "') select r_name from restaurant, rids where rids.id = restaurant.r_id and upper(r_name) = '" + restaurant.toUpperCase() + "'";
+		} else if (!restaurant.equals("") && !cuisine.equals(""))
+			query = "with rids (id) as (select r_id from restaurant_cuisine where cuisine = '" + cuisine
+					+ "') select r_name from restaurant, rids where rids.id = restaurant.r_id and upper(r_name) = '"
+					+ restaurant.toUpperCase() + "'";
 
-			//query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
+		// query = "Select r_name from restaurant where upper(r_name) like '" +
+		// restaurant.toUpperCase() + "'";
 		else if (!restaurant.equals(""))
 			query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
 		else {
-			query = "with rids (id) as (select r_id from restaurant_cuisine where cuisine = '" + cuisine + "') select r_name from restaurant, rids where rids.id = restaurant.r_id";
-			//query = "select r_name from restuarant_cuisine, restaurant where cuisine = '" + cuisine + "' and restaurant_cuisine.r_id = restaurant.r_id";
+			query = "with rids (id) as (select r_id from restaurant_cuisine where cuisine = '" + cuisine
+					+ "') select r_name from restaurant, rids where rids.id = restaurant.r_id";
+			// query = "select r_name from restuarant_cuisine, restaurant where cuisine = '"
+			// + cuisine + "' and restaurant_cuisine.r_id = restaurant.r_id";
 		}
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -188,11 +191,27 @@ public class Landing extends JFrame {
 				int column = jTable.getSelectedColumn();
 				// extract text of clicked cell
 				String valueInCell = (String) jTable.getValueAt(row, column);
-				// pass to restaurant page
-				RestPage rp = new RestPage(user,valueInCell, 0, "");
-				rp.setVisible(true);
-				dispose();
+				try {
+					Class.forName("oracle.jdbc.driver.OracleDriver");
+					Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM",
+							"16181618");
+					Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+					String query = "select * from restaurant where r_name = '" + valueInCell + "'";
+					ResultSet rs = stmt.executeQuery(query);
+					Restaurant rst;
+					if (rs.next()) {
+						rst = (Restaurant)new Restaurant(rs.getInt("r_id"), valueInCell, rs.getString("address"));
+						// pass to restaurant page
+						RestPage rp = new RestPage (user, rst, 0, "");
+						rp.setVisible(true);
+						dispose();
+					}
+					con.commit();
+					con.close();
 
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 		});
 	}

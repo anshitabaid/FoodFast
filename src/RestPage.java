@@ -9,9 +9,12 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JToggleButton;
@@ -21,7 +24,7 @@ import javax.swing.JTable;
 public class RestPage extends JFrame {
 
 	private JPanel contentPane;
-	private String r_name;
+	private Restaurant restaurant;
 	User user;
 	private JTable table;
 	int isVeg;
@@ -58,27 +61,20 @@ public class RestPage extends JFrame {
 	 * Launch the application.
 	 */
 	/*
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					RestPage frame = new RestPage();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-	*/
+	 * public static void main(String[] args) { EventQueue.invokeLater(new
+	 * Runnable() { public void run() { try { RestPage frame = new RestPage();
+	 * frame.setVisible(true); } catch (Exception e) { e.printStackTrace(); } } });
+	 * }
+	 */
 
 	/**
 	 * Create the frame.
 	 */
-	public RestPage (User u, String r_name, int v, String s){
+	public RestPage (User u, Restaurant r, int v, String s){
 		user = u;
 		isVeg = v;
 		sortBy = s;
+		restaurant = r;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(500, 100, 450, 500);
 		contentPane = new JPanel();
@@ -107,7 +103,7 @@ public class RestPage extends JFrame {
 		
 
 		String attr [] = {"Price", "Popularity"};
-		JComboBox <String> cbFilter = new JComboBox<String>(attr);
+		JComboBox<String> cbFilter = new JComboBox(attr);
 		cbFilter.setBounds(220, 62, 143, 24);
 		cbFilter.setSelectedIndex(-1);
 		contentPane.add(cbFilter);
@@ -117,12 +113,49 @@ public class RestPage extends JFrame {
 		contentPane.add(table);
 		
 		JButton btnApply = new JButton("Apply");
-		btnApply.setBounds(152, 139, 117, 25);
+		btnApply.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int tempIsVeg=0;
+				String tempSort= cbFilter.getItemAt(cbFilter.getSelectedIndex());
+				if (tempSort == null) tempSort = "";
+				if (chkVeg.isSelected())
+					tempIsVeg = 1;
+				RestPage rpnew = new RestPage (user, restaurant, tempIsVeg, tempSort);
+				rpnew.setVisible(true);
+				dispose();
+			}
+		});
+		btnApply.setBounds(161, 119, 117, 25);
 		contentPane.add(btnApply);
-		
-		//populate table with all dishes
-		//if (isVeg == 0 && sortBy.equals("")) {
-			//query = "select "
+		String query="select d_name, price from dish where r_id = " + restaurant.id;
+		if (isVeg == 1 && !sortBy.equals ("")) {
+			if (sortBy.equals ("Price"))
+				query = "select d_name, price from dish where r_id =" +restaurant.id  + " and isVeg = 1 order by " + sortBy;
+			//@TODO
+			//implement order by popularity
+			}
+		else 
+			if (isVeg == 1)
+				query = "select d_name, price from dish where r_id =" +restaurant.id  + " and isVeg = 1";
+			else if( !sortBy.equals (""))
+				query = "select d_name, price from dish where r_id =" +restaurant.id  + " order by " + sortBy;
+		System.out.println (query);
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM", "16181618");
+			Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			ResultSet rs = stmt.executeQuery(query);
+			// build table
+			table = new JTable(buildTableModel(rs));
+			table.setBounds(12, 157, 426, 284);
+			contentPane.add(table);
+			con.commit();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
+		
+		
 	}
+}
