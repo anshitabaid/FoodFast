@@ -27,7 +27,7 @@ public class Listing extends JFrame {
 	}
 
 	/**
-	 * Create the frame.
+	 * Ceseate the frame.
 	 */
 	public Listing() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

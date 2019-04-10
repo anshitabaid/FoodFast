@@ -34,12 +34,13 @@ public class Landing extends JFrame {
 	private JTextField tfName;
 	private String restaurant;
 	private String cuisine;
+	private static User user;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Landing frame = new Landing("", "");
+					Landing frame = new Landing(user, "", "");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -78,7 +79,8 @@ public class Landing extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Landing(String r, String c) {
+	public Landing(User user,String r, String c) {
+		this.user = user;
 		restaurant = r;
 		cuisine = c;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -140,7 +142,7 @@ public class Landing extends JFrame {
 				restaurant = tfName.getText ();
 				cuisine = cuisineList.getItemAt(cuisineList.getSelectedIndex());
 				if (cuisine == null)	cuisine = "";
-				Landing frame2 = new Landing (restaurant, cuisine);
+				Landing frame2 = new Landing (user, restaurant, cuisine);
 				frame2.setVisible (true);
 				dispose();
 			}
@@ -187,7 +189,7 @@ public class Landing extends JFrame {
 				// extract text of clicked cell
 				String valueInCell = (String) jTable.getValueAt(row, column);
 				// pass to restaurant page
-				RestPage rp = new RestPage(valueInCell);
+				RestPage rp = new RestPage(user,valueInCell, 0, "");
 				rp.setVisible(true);
 				dispose();
 
