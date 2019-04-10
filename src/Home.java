@@ -121,7 +121,7 @@ public class Home extends JFrame {
 								// set instance
 								user = new User(rs.getString("phone_num"), rs.getString("name"),
 										rs.getString("address"));
-								Landing l = new Landing();
+								Landing l = new Landing("", "");
 								l.setVisible(true);
 								dispose();
 								// setVisible (false);

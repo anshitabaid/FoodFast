@@ -32,15 +32,14 @@ public class Landing extends JFrame {
 	private JPanel contentPane;
 	private JTable table;
 	private JTextField tfName;
+	private String restaurant;
+	private String cuisine;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Landing frame = new Landing();
+					Landing frame = new Landing("", "");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -70,7 +69,7 @@ public class Landing extends JFrame {
 			data.add(vector);
 		}
 
-		DefaultTableModel tableModel =  new DefaultTableModel(data, columnNames);
+		DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
 		tableModel.fireTableDataChanged();
 		return tableModel;
 
@@ -79,7 +78,9 @@ public class Landing extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Landing() {
+	public Landing(String r, String c) {
+		restaurant = r;
+		cuisine = c;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(500, 100, 450, 500);
 		contentPane = new JPanel();
@@ -87,9 +88,10 @@ public class Landing extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		JButton btnSearch = new JButton("");
+		
 		btnSearch.setBounds(215, 91, 40, 40);
 		contentPane.add(btnSearch);
-		// adding icon to searchbutton
+		// adding icon to search button
 		try {
 			Image img = ImageIO.read(getClass().getResource("resources/search.png"));
 			Image resizedImage = img.getScaledInstance(btnSearch.getWidth(), btnSearch.getHeight(),
@@ -98,6 +100,7 @@ public class Landing extends JFrame {
 		} catch (Exception ex) {
 			System.out.println(ex);
 		}
+		
 
 		JLabel lblCuisine = new JLabel("Search by Cuisine");
 		lblCuisine.setBounds(262, 35, 126, 15);
@@ -126,76 +129,67 @@ public class Landing extends JFrame {
 			}
 			// sets first entry to null
 			cuisineList.setSelectedIndex(-1);
-
+			con.commit();
+			con.close ();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// prints list of all restaurants
+		//action for search button
+		btnSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				restaurant = tfName.getText ();
+				cuisine = String.valueOf(cuisineList.getItemAt(cuisineList.getSelectedIndex()));
+				//if (cuisine == null)	cuisine = "";
+				System.out.println (cuisine.equals(""));
+				Landing frame2 = new Landing (restaurant, cuisine);
+				frame2.setVisible (true);
+				dispose();
+			}
+		});
+		// prepare query
+		String query;
+		if (restaurant == "" && cuisine == "")
+		{
+			// populate all restaurants
+			query = "select r_name from restaurant";
+			System.out.println ("YES");
+		}
+		else if (restaurant != "" && cuisine != "")
+			query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
+		else if (restaurant != null)
+			query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
+		else
+			query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
+
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM", "16181618");
 			Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			try {
-				ResultSet rs = stmt.executeQuery("SELECT r_name FROM restaurant");
-				table = new JTable(buildTableModel(rs));
-
-				table.setBounds(12, 144, 426, 284);
-				contentPane.add(table);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			// perform filter
-			btnSearch.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					try {
-						Class.forName("oracle.jdbc.driver.OracleDriver");
-						Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM",
-								"16181618");
-						Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-								ResultSet.CONCUR_READ_ONLY);
-						String query="";
-						String name = tfName.getText();
-						String cuisine = String.valueOf(cuisineList.getSelectedItem());
-						if (name!= null)
-							query = "Select r_name from restaurant where upper(r_name) like '" + name.toUpperCase() + "'";
-						try {
-							ResultSet rs = stmt.executeQuery(query);
-
-							//table = new JTable(buildTableModel(rs));
-							table.repaint();
-
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			});
-
-			table.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					JTable jTable = (JTable) e.getSource();
-					int row = jTable.getSelectedRow();
-					int column = jTable.getSelectedColumn();
-					// extract text of clicked cell
-					String valueInCell = (String) jTable.getValueAt(row, column);
-					// pass to restaurant page
-					RestPage rp = new RestPage(valueInCell);
-					rp.setVisible(true);
-					dispose();
-
-				}
-			});
-
+			ResultSet rs = stmt.executeQuery(query);
+			// build table
+			table = new JTable(buildTableModel(rs));
+			table.setBounds(12, 144, 426, 284);
+			contentPane.add(table);
 			con.commit();
 			con.close();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JTable jTable = (JTable) e.getSource();
+				int row = jTable.getSelectedRow();
+				int column = jTable.getSelectedColumn();
+				// extract text of clicked cell
+				String valueInCell = (String) jTable.getValueAt(row, column);
+				// pass to restaurant page
+				RestPage rp = new RestPage(valueInCell);
+				rp.setVisible(true);
+				dispose();
+
+			}
+		});
 	}
 }
