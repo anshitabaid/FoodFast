@@ -1,2 +1,4 @@
 dialogue boxes
 time check
+
+cuisine table redundant

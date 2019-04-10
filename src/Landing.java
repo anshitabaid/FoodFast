@@ -138,9 +138,8 @@ public class Landing extends JFrame {
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				restaurant = tfName.getText ();
-				cuisine = String.valueOf(cuisineList.getItemAt(cuisineList.getSelectedIndex()));
-				//if (cuisine == null)	cuisine = "";
-				System.out.println (cuisine.equals(""));
+				cuisine = cuisineList.getItemAt(cuisineList.getSelectedIndex());
+				if (cuisine == null)	cuisine = "";
 				Landing frame2 = new Landing (restaurant, cuisine);
 				frame2.setVisible (true);
 				dispose();
@@ -148,19 +147,22 @@ public class Landing extends JFrame {
 		});
 		// prepare query
 		String query;
-		if (restaurant == "" && cuisine == "")
+		System.out.println (restaurant);
+		if (restaurant.equals("") && cuisine.equals(""))
 		{
 			// populate all restaurants
 			query = "select r_name from restaurant";
-			System.out.println ("YES");
 		}
-		else if (restaurant != "" && cuisine != "")
-			query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
-		else if (restaurant != null)
-			query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
-		else
-			query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
+		else if (!restaurant.equals("") && !cuisine.equals(""))
+			query = "with rids (id) as (select r_id from restaurant_cuisine where cuisine = '" + cuisine + "') select r_name from restaurant, rids where rids.id = restaurant.r_id and upper(r_name) = '" + restaurant.toUpperCase() + "'";
 
+			//query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
+		else if (!restaurant.equals(""))
+			query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
+		else {
+			query = "with rids (id) as (select r_id from restaurant_cuisine where cuisine = '" + cuisine + "') select r_name from restaurant, rids where rids.id = restaurant.r_id";
+			//query = "select r_name from restuarant_cuisine, restaurant where cuisine = '" + cuisine + "' and restaurant_cuisine.r_id = restaurant.r_id";
+		}
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM", "16181618");

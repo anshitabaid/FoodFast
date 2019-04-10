@@ -18,3 +18,8 @@ insert into restaurant values (2, 'Hadiqa', 'Tiger Circle', '17 feb 2013', '18 f
 create table cuisine (c_name varchar (10) primary key);
 insert into cuisine values ('Indian');
 insert into cuisine values ('Italian');
+
+//when only cuisine is known
+select r_name from restuarant_cuisine rc, restaurant r where cuisine = <cuisine> and rc.r_id = r.r_id;  
+
+create table restaurant_cuisine 
