@@ -192,7 +192,14 @@ public class Landing extends JFrame {
 				int row = jTable.getSelectedRow();
 				int column = jTable.getSelectedColumn();
 				// extract text of clicked cell
-				String valueInCell = (String) jTable.getValueAt(row, column);
+				String valueInCell="";
+				try
+				{
+					valueInCell = (String) jTable.getValueAt(row, column);
+				}
+				catch (ArrayIndexOutOfBoundsException exc) {
+					
+				}
 				try {
 					Class.forName("oracle.jdbc.driver.OracleDriver");
 					Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM",

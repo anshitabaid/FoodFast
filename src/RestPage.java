@@ -152,6 +152,31 @@ public class RestPage extends JFrame {
 			contentPane.add(table);
 
 			JButton btnRemove = new JButton("Remove seleced item");
+			btnRemove.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (valueInCell!= null && l.order.isEmpty()==false) {
+						
+						//check if exists in arraylist, if it does, delete it
+						int i;
+						for (i=0; i< l.order.size(); i++)
+							if (l.order.get(i).d_name.compareToIgnoreCase(valueInCell)==0) 
+								break;
+						if (i < l.order.size ())
+						{
+							if (l.order.get(i).quantity == 1)
+								l.order.remove(i);
+							else {
+								Order otemp = l.order.get(i);
+								otemp.quantity--;
+								l.order.set(i, otemp);
+							}
+								
+						}
+						
+					}
+					printList (l.order);
+				}
+			});
 			btnRemove.setBounds(24, 430, 183, 25);
 			contentPane.add(btnRemove);
 
