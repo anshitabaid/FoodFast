@@ -1,4 +1,3 @@
 dialogue boxes
 time check
-
-cuisine table redundant
+sort dishes by popularity

@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -35,6 +37,7 @@ public class Landing extends JFrame {
 	private String restaurant;
 	private String cuisine;
 	private static User user;
+	public List<Order> order = new ArrayList<>();
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -149,7 +152,6 @@ public class Landing extends JFrame {
 		});
 		// prepare query
 		String query;
-		System.out.println(restaurant);
 		if (restaurant.equals("") && cuisine.equals("")) {
 			// populate all restaurants
 			query = "select r_name from restaurant";
@@ -202,7 +204,7 @@ public class Landing extends JFrame {
 					if (rs.next()) {
 						rst = (Restaurant)new Restaurant(rs.getInt("r_id"), valueInCell, rs.getString("address"));
 						// pass to restaurant page
-						RestPage rp = new RestPage (user, rst, 0, "");
+						RestPage rp = new RestPage (user, rst, new Landing (user, "", ""), 0, "");
 						rp.setVisible(true);
 						dispose();
 					}
