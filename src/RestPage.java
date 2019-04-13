@@ -148,36 +148,35 @@ public class RestPage extends JFrame {
 			ResultSet rs = stmt.executeQuery(query);
 			// build table
 			table = new JTable(buildTableModel(rs));
-			table.setBounds(12, 157, 426, 231);
+			table.setBounds(12, 157, 426, 144);
 			contentPane.add(table);
 
 			JButton btnRemove = new JButton("Remove seleced item");
 			btnRemove.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (valueInCell!= null && l.order.isEmpty()==false) {
+					if (valueInCell!= null && landing.order.isEmpty()==false) {
 						
 						//check if exists in arraylist, if it does, delete it
 						int i;
-						for (i=0; i< l.order.size(); i++)
-							if (l.order.get(i).d_name.compareToIgnoreCase(valueInCell)==0) 
+						for (i=0; i< landing.order.size(); i++)
+							if (landing.order.get(i).d_name.compareToIgnoreCase(valueInCell)==0) 
 								break;
-						if (i < l.order.size ())
+						if (i < landing.order.size ())
 						{
-							if (l.order.get(i).quantity == 1)
-								l.order.remove(i);
+							if (landing.order.get(i).quantity == 1)
+								landing.order.remove(i);
 							else {
-								Order otemp = l.order.get(i);
+								Order otemp = landing.order.get(i);
 								otemp.quantity--;
-								l.order.set(i, otemp);
+								landing.order.set(i, otemp);
 							}
 								
 						}
 						
 					}
-					printList (l.order);
 				}
 			});
-			btnRemove.setBounds(24, 430, 183, 25);
+			btnRemove.setBounds(24, 337, 183, 25);
 			contentPane.add(btnRemove);
 
 			JButton btnAdd = new JButton("Add selected item");
@@ -185,7 +184,7 @@ public class RestPage extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					if (valueInCell != null) {
 						Order otemp;
-						if (l.order.isEmpty()) {
+						if (landing.order.isEmpty()) {
 							// add first item to arraylist
 							try {
 								Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -198,7 +197,7 @@ public class RestPage extends JFrame {
 								if (rs.next()) {
 									otemp = new Order(1, rs.getInt("d_id"), rs.getString("d_name"), 1,
 											rs.getInt("price"));
-									l.order.add(otemp);
+									landing.order.add(otemp);
 								}
 
 								con.commit();
@@ -212,20 +211,20 @@ public class RestPage extends JFrame {
 							// if it does then increase the quantity and total
 							// else add to list
 							boolean exists = false;
-							for (int i = 0; i < l.order.size(); i++) {
-								if (l.order.get(i).d_name.compareToIgnoreCase(valueInCell) == 0) {
+							for (int i = 0; i < landing.order.size(); i++) {
+								if (landing.order.get(i).d_name.compareToIgnoreCase(valueInCell) == 0) {
 									// exists
-									otemp = l.order.get(i);
+									otemp = landing.order.get(i);
 									otemp.quantity += 1;
 									otemp.total += otemp.perprice;
-									l.order.set(i, otemp);
+									landing.order.set(i, otemp);
 									exists = true;
 									break;
 								}
 							}
 							if (!exists) {
 								// find last index, increment and add new entry
-								int lastIndex = l.order.get(l.order.size() - 1).slNo;
+								int lastIndex = landing.order.get(landing.order.size() - 1).slNo;
 								try {
 									Class.forName("oracle.jdbc.driver.OracleDriver");
 									Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe",
@@ -238,7 +237,7 @@ public class RestPage extends JFrame {
 										otemp = new Order(lastIndex + 1, rs.getInt("d_id"), rs.getString("d_name"), 1,
 
 												rs.getInt("price"));
-										l.order.add(otemp);
+										landing.order.add(otemp);
 									}
 									con.commit();
 									con.close();
@@ -250,11 +249,32 @@ public class RestPage extends JFrame {
 						}
 
 					}
-					printList(l.order);
 				}
 			});
-			btnAdd.setBounds(263, 430, 161, 25);
+			btnAdd.setBounds(244, 337, 161, 25);
 			contentPane.add(btnAdd);
+			
+			JButton btnCart = new JButton("Cart");
+			btnCart.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Cart c = new Cart (user, landing, restaurant);
+					c.setVisible (true);
+					dispose ();
+				}
+			});
+			btnCart.setBounds(161, 463, 117, 25);
+			contentPane.add(btnCart);
+
+			JButton btnProfile = new JButton("Profile");
+			btnProfile.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					Profile p = new Profile (user, landing, restaurant);
+					p.setVisible(true);
+					dispose ();
+				}
+			});
+			btnProfile.setBounds(301, 436, 117, 25);
+			contentPane.add(btnProfile);
 			con.commit();
 			con.close();
 		} catch (Exception e) {
@@ -287,6 +307,7 @@ public class RestPage extends JFrame {
 		});
 
 	}
+	/*
 
 	public void printList(List<Order> l) {
 		int i;
@@ -297,4 +318,5 @@ public class RestPage extends JFrame {
 					o.slNo + " " + o.d_id + " " + o.d_name + " " + o.quantity + " " + o.perprice + " " + o.total);
 		}
 	}
+	*/
 }

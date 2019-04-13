@@ -90,7 +90,6 @@ public class SignUp extends JFrame {
 		lblNewLabel.setBounds(192, 158, 46, 14);
 		contentPane.add(lblNewLabel);
 		
-			
 		JButton btnSignup = new JButton("SignUp");
 		btnSignup.setBounds(202, 189, 89, 23);
 		contentPane.add(btnSignup);
@@ -98,6 +97,10 @@ public class SignUp extends JFrame {
 		txtPassword = new JPasswordField();
 		txtPassword.setBounds(262, 155, 86, 20);
 		contentPane.add(txtPassword);
+		
+		JLabel check = new JLabel("");
+		check.setBounds(192, 223, 116, 14);
+		contentPane.add(check);
 		btnSignup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent args0)
 			{
@@ -106,21 +109,26 @@ public class SignUp extends JFrame {
 					String password = String.valueOf(txtPassword.getPassword());
 					String name = txtName.getText();
 					String address = txtAddr.getText();
+					System.out.println("hello");
 					Class.forName("oracle.jdbc.driver.OracleDriver");
 					// step2 create the connection object
 					Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM",
-							"Slb1312");
+							"16181618");
 					// create statement
-					Statement stmt = con.createStatement(
-						    ResultSet.TYPE_SCROLL_INSENSITIVE,
-						    ResultSet.CONCUR_READ_ONLY
-						);
-					ResultSet rs = stmt.executeQuery("insert into user values(phno,name,address,password");
-					
+					Statement stmt = con.createStatement();
+						   // ResultSet.TYPE_SCROLL_INSENSITIVE,
+						   // ResultSet.CONCUR_READ_ONLY
+						//);
+					ResultSet rs = stmt.executeQuery("insert into users values('"+phno+"','"+name+"','"+address + "','" + password+"')");
+					System.out.println("hello");
+					//home new_frame=new home();
+					//new_frame.setVisible(true);
+					dispose();
 				}
 				catch(Exception e)
 				{
-					e.printStackTrace();
+					check.setText("User already exists");
+					//e.printStackTrace();
 				}
 			}
 		});

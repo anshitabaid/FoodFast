@@ -36,9 +36,9 @@ public class Landing extends JFrame {
 	private JTextField tfName;
 	private String restaurant;
 	private String cuisine;
-	private static User user;
+	private User user;
 	public List<Order> order = new ArrayList<>();
-
+/*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -51,7 +51,7 @@ public class Landing extends JFrame {
 			}
 		});
 	}
-
+*/
 	public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
 
 		ResultSetMetaData metaData = rs.getMetaData();
@@ -177,8 +177,31 @@ public class Landing extends JFrame {
 			ResultSet rs = stmt.executeQuery(query);
 			// build table
 			table = new JTable(buildTableModel(rs));
-			table.setBounds(12, 144, 426, 284);
+			table.setBounds(12, 144, 426, 239);
 			contentPane.add(table);
+			
+			JButton btnLogout = new JButton("Logout");
+			btnLogout.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					LoggedOut d = new LoggedOut ();
+					Home h = new Home ();
+					h.setVisible(true);
+					dispose ();
+				}
+			});
+			btnLogout.setBounds(99, 436, 117, 25);
+			contentPane.add(btnLogout);
+			
+			JButton btnProfile = new JButton("Profile");
+			btnProfile.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					Profile p = new Profile (user, null, null);
+					p.setVisible(true);
+					dispose ();
+				}
+			});
+			btnProfile.setBounds(301, 436, 117, 25);
+			contentPane.add(btnProfile);
 			con.commit();
 			con.close();
 		} catch (Exception e) {
@@ -211,6 +234,7 @@ public class Landing extends JFrame {
 					if (rs.next()) {
 						rst = (Restaurant)new Restaurant(rs.getInt("r_id"), valueInCell, rs.getString("address"));
 						// pass to restaurant page
+
 						RestPage rp = new RestPage (user, rst, new Landing (user, "", ""), 0, "");
 						rp.setVisible(true);
 						dispose();

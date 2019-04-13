@@ -72,6 +72,7 @@ public class Home extends JFrame {
 		panel.add(lblPhno);
 
 		txtPhno = new JTextField();
+		txtPhno.setText("9748700604");
 		txtPhno.setBounds(154, 49, 114, 19);
 		panel.add(txtPhno);
 		txtPhno.setColumns(10);

@@ -19,7 +19,33 @@ create table cuisine (c_name varchar (10) primary key);
 insert into cuisine values ('Indian');
 insert into cuisine values ('Italian');
 
-//when only cuisine is known
-select r_name from restuarant_cuisine rc, restaurant r where cuisine = <cuisine> and rc.r_id = r.r_id;  
 
 create table restaurant_cuisine 
+(
+    rc_id number primary key,
+    r_id number references restuarant,
+    cuisine varchar (20)references cuisine,
+)
+
+insert into restaurant_cuisine values(1, 1, 'Indian');
+
+//when only cuisine is known
+
+
+with rids (id) as (select r_id from restaurant_cuisine where cuisine = 'Indian') select r_name from restaurant, rids where rids.id = restaurant.r_id;
+
+//both are known
+with rids (id) as (select r_id from restaurant_cuisine where cuisine = 'Indian') select r_name from restaurant, rids where rids.id = restaurant.r_id and r_name = 'Dollops'
+
+create table dish (d_id number primary key, r_id number references restaurant, d_name varchar (20), price number, isVeg number);
+
+
+insert into dish values(1, 1, 'Chicken Tikka', 140, 0);
+
+insert into dish values(2, 1, 'Paneer Tikka', 120, 1);
+
+create table orders (o_id number primary key, price int, phone_num varchar (20) references users, r_id number references restaurant, order_time timestamp);
+
+create table order_has_dishes (ohd_id number primary key, o_id number references orders, d_id number references dish, quantity int);
+
+GENERATED ALWAYS AS IDENTITY
