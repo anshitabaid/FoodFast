@@ -153,8 +153,6 @@ public class RestPage extends JFrame {
 			if (sortBy.equals("Price"))
 				query = "select d_name, price from dish where r_id =" + restaurant.id + " and isVeg = 1 order by "
 						+ sortBy;
-			// @TODO
-			// implement order by popularity
 			else {
 				// sortBy == popularity
 				query = "with dishpop (did, c) as (select d_id, count(d_id) as count from order_has_dishes group by d_id) select d_name, price from dish, dishpop where r_id = "

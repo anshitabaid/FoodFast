@@ -62,5 +62,4 @@ public class Dialog extends JDialog {
 			}
 		}
 	}
-
 }

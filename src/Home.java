@@ -60,7 +60,7 @@ public class Home extends JFrame {
 
 		JLabel lblMessage = new JLabel("");
 		lblMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMessage.setBounds(104, 307, 237, 15);
+		lblMessage.setBounds(96, 303, 237, 15);
 		panel.add(lblMessage);
 
 		txtPassword = new JPasswordField();

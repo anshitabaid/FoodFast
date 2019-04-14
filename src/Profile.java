@@ -121,7 +121,7 @@ public class Profile extends JFrame {
 			table.setShowVerticalLines(false);
 			table.setShowHorizontalLines(false);
 			table.setShowGrid(false);
-			table.setBounds(42, 259, 339, 187);
+			table.setBounds(42, 259, 357, 187);
 			contentPane.add(table);
 			
 			JLabel lblNewLabel = new JLabel("Order ID");

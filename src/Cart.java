@@ -11,9 +11,11 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLType;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -134,25 +136,44 @@ public class Cart extends JFrame {
 					Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM",
 							"16181618");
 					Statement stmt = con.createStatement();
+					/*
 					ResultSet rs = stmt.executeQuery("select max (o_id) as o_id from orders");
 					int oid = 1;
 					if (rs.next())
 						oid = rs.getInt("o_id") + 1;
-					String query = "insert into orders values (" + oid + "," + total + ",'" + user.phone_num + "',"
-							+ restaurant.id + ",to_timestamp('" + date + "', 'yyyy/MM/dd HH24.mi.ss'))";
-					rs = stmt.executeQuery(query);
+						*/
+					//procedure to find order id
+					String callProc = "{call insertOrders (?, ?, ?, ?, ?)}";
+					CallableStatement cs = con.prepareCall(callProc);
+					cs.setInt (1, total);
+					cs.setString(2, user.phone_num);
+					cs.setInt(3, restaurant.id);
+					cs.setString(4, date);
+					cs.registerOutParameter(5, java.sql.Types.NUMERIC);
+					cs.executeUpdate();
+					int oid = cs.getInt (5);
+					//String query = "insert into orders values (" + oid + "," + total + ",'" + user.phone_num + "',"+ restaurant.id + ",to_timestamp('" + date + "', 'yyyy/MM/dd HH24.mi.ss'))";
+					//ResultSet rs = stmt.executeQuery(query);
 					// insert to order_has_dishes now
 
 					Order o;
 					for (int i = 0; i < landing.order.size(); i++) {
 						o = landing.order.get(i);
+						/*
 						rs = stmt.executeQuery("select max(ohd_id) as ohd_id from order_has_dishes");
 						int ohdid = 1;
 						if (rs.next())
 							ohdid = rs.getInt("ohd_id") + 1;
-						query = "insert into order_has_dishes values (" + ohdid + "," + oid + "," + o.d_id + ","
-								+ o.quantity + ")";
-						rs = stmt.executeQuery(query);
+						*/
+						callProc = "{call insertOrderHasDishes (?,?,?)}";
+						cs = con.prepareCall(callProc);
+						cs.setInt(1, oid);
+						cs.setInt(2,o.d_id);
+						cs.setInt(3, o.quantity);
+						cs.executeUpdate();
+						//String query = "insert into order_has_dishes values (" + ohdid + "," + oid + "," + o.d_id + ","
+								//+ o.quantity + ")";
+						//ResultSet rs = stmt.executeQuery(query);
 					}
 					Dialog d = new Dialog ("Order placed!");
 					d.setVisible(true);
