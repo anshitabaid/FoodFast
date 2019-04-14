@@ -124,7 +124,7 @@ public class show_menu extends JFrame {
 			table_1.setShowVerticalLines(false);
 			table_1.setShowHorizontalLines(false);
 			table_1.setShowGrid(false);
-			table_1.setBounds(10, 52, 381, 176);
+			table_1.setBounds(21, 61, 381, 145);
 			//contentPane.add(table);
 			panel.add(table_1);
 			
@@ -143,6 +143,8 @@ public class show_menu extends JFrame {
 			JLabel lblType = new JLabel("Type");
 			lblType.setBounds(305, 35, 46, 14);
 			panel.add(lblType);
+			con.commit();
+			con.close();
 		}
 		catch(Exception e)
 		{

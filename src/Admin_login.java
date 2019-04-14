@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
+import java.awt.Font;
 
 public class Admin_login extends JFrame {
 
@@ -79,6 +80,13 @@ public class Admin_login extends JFrame {
 		passwordField = new JPasswordField();
 		passwordField.setBounds(197, 98, 86, 20);
 		panel.add(passwordField);
+		
+		JLabel lblAdminAccess = new JLabel("Admin Access");
+		lblAdminAccess.setFont(new Font("Dialog", Font.BOLD, 16));
+		lblAdminAccess.setVerticalAlignment(SwingConstants.TOP);
+		lblAdminAccess.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAdminAccess.setBounds(102, 12, 181, 28);
+		panel.add(lblAdminAccess);
 		
 		
 		

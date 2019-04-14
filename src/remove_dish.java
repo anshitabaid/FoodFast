@@ -54,8 +54,8 @@ public class remove_dish extends JFrame {
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
-		JLabel lblDishName = new JLabel("Dish Name");
-		lblDishName.setBounds(109, 63, 75, 14);
+		JLabel lblDishName = new JLabel("Dish ID");
+		lblDishName.setBounds(131, 62, 75, 14);
 		panel.add(lblDishName);
 		
 		textField = new JTextField();
@@ -73,7 +73,7 @@ public class remove_dish extends JFrame {
 		
 		JLabel label = new JLabel("");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
-		label.setBounds(109, 28, 188, 14);
+		label.setBounds(125, 164, 188, 14);
 		panel.add(label);
 		
 		JButton btnLogout = new JButton("Logout");
@@ -87,7 +87,7 @@ public class remove_dish extends JFrame {
 		try
 		{
 			
-			String dish_name = textField.getText();
+			int dish_id = Integer.parseInt(textField.getText());
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			// step2 create the connection object
 			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM",
@@ -95,12 +95,11 @@ public class remove_dish extends JFrame {
 			// create statement'
 			Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			
-			String q = "delete from dish where d_name ='" +dish_name+"'";
-			//con.commit();
+			String q = "delete from dish where d_id =" +dish_id+" and r_id = " + admin_1.ad_id;
 			ResultSet rs= stmt.executeQuery(q);
-			//System.out.println(q);
-			System.out.println("hello1");
 			label.setText("Deletion Successful");
+			con.commit ();
+			con.close ();
 		}
 	
 		catch(Exception e)

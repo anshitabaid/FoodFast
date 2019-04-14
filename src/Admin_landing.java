@@ -52,11 +52,11 @@ public class Admin_landing extends JFrame {
 		panel.setLayout(null);
 		
 		JLabel lblRestaurantName = new JLabel("Restaurant Name :");
-		lblRestaurantName.setBounds(109, 21, 133, 15);
+		lblRestaurantName.setBounds(87, 21, 133, 15);
 		panel.add(lblRestaurantName);
 		
 		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setBounds(224, 21, 70, 15);
+		lblNewLabel.setBounds(237, 21, 103, 15);
 		panel.add(lblNewLabel);
 		//lblNewLabel.setText(admin_1.r_name);
 		
