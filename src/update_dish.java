@@ -65,7 +65,7 @@ public class update_dish extends JFrame {
 		textField.setColumns(10);
 
 		JLabel label = new JLabel("");
-		label.setBounds(109, 199, 181, 14);
+		label.setBounds(136, 208, 181, 14);
 		panel.add(label);
 
 		JLabel lblNewPrice = new JLabel("New Price");
@@ -162,7 +162,6 @@ public class update_dish extends JFrame {
 						ResultSet rs = stmt.executeQuery(q);
 						label.setText("Updation Successful");
 					}
-
 					con.commit();
 					con.close();
 				}
