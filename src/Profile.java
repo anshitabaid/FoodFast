@@ -84,13 +84,13 @@ public class Profile extends JFrame {
 		lblHead.setText("Welcome " + user.name);
 
 		JLabel lblPhNo = new JLabel("");
-		lblPhNo.setBounds(32, 132, 296, 15);
+		lblPhNo.setBounds(32, 104, 296, 15);
 		contentPane.add(lblPhNo);
 		lblPhNo.setText("Phone number: " + user.phone_num);
 
 		JLabel lblAddress = new JLabel("");
 		lblAddress.setVerticalAlignment(SwingConstants.TOP);
-		lblAddress.setBounds(32, 178, 296, 69);
+		lblAddress.setBounds(32, 151, 296, 69);
 		contentPane.add(lblAddress);
 		lblAddress.setText("Address: " + user.address);
 
@@ -139,6 +139,18 @@ public class Profile extends JFrame {
 			JLabel lblNewLabel_3 = new JLabel("Past Orders");
 			lblNewLabel_3.setBounds(32, 206, 85, 15);
 			contentPane.add(lblNewLabel_3);
+			
+			JButton btnNewButton = new JButton("Update Profile");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					UpdateForm uf = new UpdateForm (user);
+					uf.setVisible (true);
+				}
+			});
+			
+			btnNewButton.setBounds(293, 31, 136, 25);
+			contentPane.add(btnNewButton);
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();

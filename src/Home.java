@@ -88,6 +88,12 @@ public class Home extends JFrame {
 		panel.add(lblPassword);
 
 		JButton btnSignUp = new JButton("Sign Up");
+		btnSignUp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SignUp s = new SignUp ();
+				s.setVisible(true);
+			}
+		});
 		btnSignUp.setBounds(155, 334, 117, 25);
 		panel.add(btnSignUp);
 		

@@ -116,7 +116,7 @@ public class Cart extends JFrame {
 		panel.add(lblQuantity);
 		
 		JLabel lblPriceunit = new JLabel("Price/Unit");
-		lblPriceunit.setBounds(252, 112, 68, 15);
+		lblPriceunit.setBounds(242, 112, 68, 15);
 		panel.add(lblPriceunit);
 		
 		JLabel lblNewLabel_1 = new JLabel("Subtotal");
