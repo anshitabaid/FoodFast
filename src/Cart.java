@@ -23,6 +23,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
+import java.awt.Font;
 
 public class Cart extends JFrame {
 	User user;
@@ -87,7 +88,10 @@ public class Cart extends JFrame {
 		panel.setLayout(null);
 
 		table = new JTable();
-		table.setBounds(56, 137, 358, 196);
+		table.setShowGrid(false);
+		table.setShowVerticalLines(false);
+		table.setShowHorizontalLines(false);
+		table.setBounds(42, 121, 358, 196);
 		panel.add(table);
 		try {
 
@@ -110,19 +114,19 @@ public class Cart extends JFrame {
 		btnBack.setBounds(32, 31, 67, 25);
 		panel.add(btnBack);
 		JLabel lblNewLabel = new JLabel("Dish");
-		lblNewLabel.setBounds(55, 112, 31, 15);
+		lblNewLabel.setBounds(41, 96, 31, 15);
 		panel.add(lblNewLabel);
 		
 		JLabel lblQuantity = new JLabel("Quantity");
-		lblQuantity.setBounds(148, 112, 61, 15);
+		lblQuantity.setBounds(134, 96, 61, 15);
 		panel.add(lblQuantity);
 		
 		JLabel lblPriceunit = new JLabel("Price/Unit");
-		lblPriceunit.setBounds(242, 112, 68, 15);
+		lblPriceunit.setBounds(228, 96, 68, 15);
 		panel.add(lblPriceunit);
 		
 		JLabel lblNewLabel_1 = new JLabel("Subtotal");
-		lblNewLabel_1.setBounds(333, 112, 70, 15);
+		lblNewLabel_1.setBounds(319, 96, 70, 15);
 		panel.add(lblNewLabel_1);
 
 		btnOrder = new JButton("Place Order");
@@ -200,6 +204,11 @@ public class Cart extends JFrame {
 		lblNewLabel = new JLabel("Total");
 		lblNewLabel.setBounds(252, 355, 70, 15);
 		panel.add(lblNewLabel);
+		
+		JLabel lblNewLabel_2 = new JLabel("Cart");
+		lblNewLabel_2.setFont(new Font("Dialog", Font.BOLD, 20));
+		lblNewLabel_2.setBounds(183, 31, 126, 46);
+		panel.add(lblNewLabel_2);
 		addRowToJTable(landing.order);
 
 	}

@@ -115,7 +115,8 @@ public class Profile extends JFrame {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM", "16181618");
 			Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "select o_id, r_name, price from orders join restaurant on orders.r_id = restaurant.r_id where phone_num = '" + user.phone_num + "' order by order_time desc";
+			String query = "select * from (select o_id, r_name, price from orders join restaurant on orders.r_id = restaurant.r_id where phone_num = '" + user.phone_num + "' order by order_time desc )where rownum <= 10";
+			//String query = "select o_id, r_name, price from orders join restaurant on orders.r_id = restaurant.r_id where phone_num = '" + user.phone_num + "' order by order_time desc";
 			ResultSet rs = stmt.executeQuery(query);
 			table = new JTable(buildTableModel(rs));
 			table.setShowVerticalLines(false);

@@ -96,8 +96,12 @@ public class Landing extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		
+		
 		JButton btnSearch = new JButton("");
 
+		
 		btnSearch.setBounds(382, 113, 40, 40);
 		contentPane.add(btnSearch);
 		// adding icon to search button
