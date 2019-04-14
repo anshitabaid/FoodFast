@@ -15,6 +15,7 @@ import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import java.awt.Font;
 
 public class Home extends JFrame {
 
@@ -59,36 +60,42 @@ public class Home extends JFrame {
 
 		JLabel lblMessage = new JLabel("");
 		lblMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMessage.setBounds(103, 212, 237, 15);
+		lblMessage.setBounds(104, 307, 237, 15);
 		panel.add(lblMessage);
 
 		txtPassword = new JPasswordField();
-		txtPassword.setBounds(154, 105, 117, 19);
+		txtPassword.setBounds(155, 200, 117, 19);
 		panel.add(txtPassword);
 
 		JLabel lblPhno = new JLabel("Phone Number");
 		lblPhno.setHorizontalAlignment(SwingConstants.LEFT);
-		lblPhno.setBounds(154, 12, 158, 25);
+		lblPhno.setBounds(155, 107, 158, 25);
 		panel.add(lblPhno);
 
 		txtPhno = new JTextField();
 		txtPhno.setText("9748700604");
-		txtPhno.setBounds(154, 49, 114, 19);
+		txtPhno.setBounds(155, 144, 114, 19);
 		panel.add(txtPhno);
 		txtPhno.setColumns(10);
 
 		JButton btnSearch = new JButton("Login");
 
-		btnSearch.setBounds(154, 171, 117, 25);
+		btnSearch.setBounds(155, 266, 117, 25);
 		panel.add(btnSearch);
 
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(154, 76, 133, 17);
+		lblPassword.setBounds(155, 171, 133, 17);
 		panel.add(lblPassword);
 
 		JButton btnSignUp = new JButton("Sign Up");
-		btnSignUp.setBounds(154, 239, 117, 25);
+		btnSignUp.setBounds(155, 334, 117, 25);
 		panel.add(btnSignUp);
+		
+		JLabel lblTitle = new JLabel("FoodFast");
+		lblTitle.setFont(new Font("Dialog", Font.BOLD, 26));
+		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTitle.setBounds(12, 12, 402, 56);
+		panel.add(lblTitle);
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {

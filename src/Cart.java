@@ -33,6 +33,7 @@ public class Cart extends JFrame {
 	private JButton btnBack;
 	private JButton btnOrder;
 	private JLabel lblTotal;
+	private JLabel lblNewLabel;
 
 	/**
 	 * Launch the application.
@@ -84,7 +85,7 @@ public class Cart extends JFrame {
 		panel.setLayout(null);
 
 		table = new JTable();
-		table.setBounds(55, 29, 358, 132);
+		table.setBounds(56, 137, 358, 196);
 		panel.add(table);
 		try {
 
@@ -104,8 +105,23 @@ public class Cart extends JFrame {
 				dispose();
 			}
 		});
-		btnBack.setBounds(281, 251, 117, 25);
+		btnBack.setBounds(32, 31, 67, 25);
 		panel.add(btnBack);
+		JLabel lblNewLabel = new JLabel("Dish");
+		lblNewLabel.setBounds(55, 112, 31, 15);
+		panel.add(lblNewLabel);
+		
+		JLabel lblQuantity = new JLabel("Quantity");
+		lblQuantity.setBounds(148, 112, 61, 15);
+		panel.add(lblQuantity);
+		
+		JLabel lblPriceunit = new JLabel("Price/Unit");
+		lblPriceunit.setBounds(252, 112, 68, 15);
+		panel.add(lblPriceunit);
+		
+		JLabel lblNewLabel_1 = new JLabel("Subtotal");
+		lblNewLabel_1.setBounds(333, 112, 70, 15);
+		panel.add(lblNewLabel_1);
 
 		btnOrder = new JButton("Place Order");
 		btnOrder.addActionListener(new ActionListener() {
@@ -153,12 +169,16 @@ public class Cart extends JFrame {
 			Dialog d = new Dialog ("Your cart is empty!");
 			d.setVisible(true);
 		}
-		btnOrder.setBounds(164, 226, 117, 25);
+		btnOrder.setBounds(162, 433, 117, 25);
 		panel.add(btnOrder);
 
 		lblTotal = new JLabel(Integer.toString(total));
-		lblTotal.setBounds(343, 202, 70, 15);
+		lblTotal.setBounds(344, 355, 70, 15);
 		panel.add(lblTotal);
+		
+		lblNewLabel = new JLabel("Total");
+		lblNewLabel.setBounds(252, 355, 70, 15);
+		panel.add(lblNewLabel);
 		addRowToJTable(landing.order);
 
 	}

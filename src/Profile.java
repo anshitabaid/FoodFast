@@ -4,23 +4,59 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
+
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTable;
 
 public class Profile extends JFrame {
 	User user;
 	Landing landing;
 	Restaurant restaurant;
 	private JPanel contentPane;
+	private JTable table;
 
+	
+
+	public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
+
+		ResultSetMetaData metaData = rs.getMetaData();
+
+		// names of columns
+		Vector<String> columnNames = new Vector<String>();
+		int columnCount = metaData.getColumnCount();
+		for (int column = 1; column <= columnCount; column++) {
+			columnNames.add(metaData.getColumnName(column));
+		}
+
+		// data of the table
+		Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+		while (rs.next()) {
+			Vector<Object> vector = new Vector<Object>();
+			for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+				vector.add(rs.getObject(columnIndex));
+			}
+			data.add(vector);
+		}
+
+		DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
+		tableModel.fireTableDataChanged();
+		
+		return tableModel;
+
+	}
 	/**
 	 * public static void main(String[] args) { EventQueue.invokeLater(new
 	 * Runnable() { public void run() { try { Profile frame = new Profile();
@@ -54,27 +90,58 @@ public class Profile extends JFrame {
 
 		JLabel lblAddress = new JLabel("");
 		lblAddress.setVerticalAlignment(SwingConstants.TOP);
-		lblAddress.setBounds(32, 178, 296, 140);
+		lblAddress.setBounds(32, 178, 296, 69);
 		contentPane.add(lblAddress);
 		lblAddress.setText("Address: " + user.address);
-		
+
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (landing ==  null)
-				{
-					Landing l = new Landing (user, "", "");
+				if (landing == null) {
+					Landing l = new Landing(user, "", "");
 					l.setVisible(true);
-				}
-				else 
-				{
-					RestPage rp = new RestPage (user, restaurant, landing, 0, "");
+				} else {
+					RestPage rp = new RestPage(user, restaurant, landing, 0, "");
 					rp.setVisible(true);
 				}
-				dispose ();
+				dispose();
 			}
 		});
-		btnBack.setBounds(32, 12, 67, 25);
+		btnBack.setBounds(32, 31, 67, 25);
 		contentPane.add(btnBack);
+
+		JTable table;
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM", "16181618");
+			Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String query = "select o_id, r_name, price from orders join restaurant on orders.r_id = restaurant.r_id where phone_num = '" + user.phone_num + "' order by order_time desc";
+			ResultSet rs = stmt.executeQuery(query);
+			table = new JTable(buildTableModel(rs));
+			table.setShowVerticalLines(false);
+			table.setShowHorizontalLines(false);
+			table.setShowGrid(false);
+			table.setBounds(42, 259, 339, 187);
+			contentPane.add(table);
+			
+			JLabel lblNewLabel = new JLabel("Order ID");
+			lblNewLabel.setBounds(50, 232, 70, 15);
+			contentPane.add(lblNewLabel);
+			
+			JLabel lblNewLabel_1 = new JLabel("Restaurant");
+			lblNewLabel_1.setBounds(168, 232, 80, 15);
+			contentPane.add(lblNewLabel_1);
+			
+			JLabel lblNewLabel_2 = new JLabel("Total");
+			lblNewLabel_2.setBounds(298, 232, 70, 15);
+			contentPane.add(lblNewLabel_2);
+			
+			JLabel lblNewLabel_3 = new JLabel("Past Orders");
+			lblNewLabel_3.setBounds(32, 206, 85, 15);
+			contentPane.add(lblNewLabel_3);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

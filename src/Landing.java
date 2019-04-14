@@ -28,6 +28,10 @@ import java.awt.event.MouseEvent;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.ListSelectionModel;
+import java.awt.Font;
+import java.awt.Component;
+import java.awt.Dimension;
 
 public class Landing extends JFrame {
 
@@ -94,7 +98,7 @@ public class Landing extends JFrame {
 		contentPane.setLayout(null);
 		JButton btnSearch = new JButton("");
 
-		btnSearch.setBounds(215, 91, 40, 40);
+		btnSearch.setBounds(382, 113, 40, 40);
 		contentPane.add(btnSearch);
 		// adding icon to search button
 		try {
@@ -107,20 +111,20 @@ public class Landing extends JFrame {
 		}
 
 		JLabel lblCuisine = new JLabel("Search by Cuisine");
-		lblCuisine.setBounds(262, 35, 126, 15);
+		lblCuisine.setBounds(192, 113, 126, 15);
 		contentPane.add(lblCuisine);
 
 		JLabel lblSearch = new JLabel("Search by name");
-		lblSearch.setBounds(12, 35, 113, 15);
+		lblSearch.setBounds(24, 113, 113, 15);
 		contentPane.add(lblSearch);
 
 		tfName = new JTextField();
-		tfName.setBounds(12, 52, 204, 19);
+		tfName.setBounds(24, 127, 156, 25);
 		contentPane.add(tfName);
 		tfName.setColumns(10);
 
 		JComboBox<String> cuisineList = new JComboBox<String>();
-		cuisineList.setBounds(262, 49, 156, 24);
+		cuisineList.setBounds(192, 127, 156, 24);
 		contentPane.add(cuisineList);
 		// populate combobox
 		try {
@@ -154,19 +158,19 @@ public class Landing extends JFrame {
 		String query;
 		if (restaurant.equals("") && cuisine.equals("")) {
 			// populate all restaurants
-			query = "select r_name from restaurant";
+			query = "select r_name, address from restaurant";
 		} else if (!restaurant.equals("") && !cuisine.equals(""))
 			query = "with rids (id) as (select r_id from restaurant_cuisine where cuisine = '" + cuisine
-					+ "') select r_name from restaurant, rids where rids.id = restaurant.r_id and upper(r_name) = '"
+					+ "') select r_name, address from restaurant, rids where rids.id = restaurant.r_id and upper(r_name) = '"
 					+ restaurant.toUpperCase() + "'";
 
 		// query = "Select r_name from restaurant where upper(r_name) like '" +
 		// restaurant.toUpperCase() + "'";
 		else if (!restaurant.equals(""))
-			query = "Select r_name from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
+			query = "Select r_name, address from restaurant where upper(r_name) like '" + restaurant.toUpperCase() + "'";
 		else {
 			query = "with rids (id) as (select r_id from restaurant_cuisine where cuisine = '" + cuisine
-					+ "') select r_name from restaurant, rids where rids.id = restaurant.r_id";
+					+ "') select r_name, address from restaurant, rids where rids.id = restaurant.r_id";
 			// query = "select r_name from restuarant_cuisine, restaurant where cuisine = '"
 			// + cuisine + "' and restaurant_cuisine.r_id = restaurant.r_id";
 		}
@@ -177,7 +181,15 @@ public class Landing extends JFrame {
 			ResultSet rs = stmt.executeQuery(query);
 			// build table
 			table = new JTable(buildTableModel(rs));
-			table.setBounds(12, 144, 426, 239);
+			table.setAlignmentX(Component.RIGHT_ALIGNMENT);
+			table.setRowMargin(4);
+			table.setShowHorizontalLines(false);
+			table.setRowHeight(25);
+			table.setFont(new Font("Dialog", Font.PLAIN, 16));
+			table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			table.setShowVerticalLines(false);
+			table.setBounds(24, 221, 390, 222);
+			table.setIntercellSpacing(new Dimension(5, 5));
 			contentPane.add(table);
 			
 			JButton btnLogout = new JButton("Logout");
@@ -189,7 +201,7 @@ public class Landing extends JFrame {
 					dispose ();
 				}
 			});
-			btnLogout.setBounds(99, 436, 117, 25);
+			btnLogout.setBounds(319, 35, 84, 25);
 			contentPane.add(btnLogout);
 			
 			JButton btnProfile = new JButton("Profile");
@@ -200,8 +212,16 @@ public class Landing extends JFrame {
 					dispose ();
 				}
 			});
-			btnProfile.setBounds(301, 436, 117, 25);
+			btnProfile.setBounds(175, 35, 80, 25);
 			contentPane.add(btnProfile);
+			
+			JLabel lblNewLabel = new JLabel("Restaurant");
+			lblNewLabel.setBounds(24, 194, 80, 15);
+			contentPane.add(lblNewLabel);
+			
+			JLabel lblAddress = new JLabel("Address");
+			lblAddress.setBounds(222, 194, 70, 15);
+			contentPane.add(lblAddress);
 			con.commit();
 			con.close();
 		} catch (Exception e) {

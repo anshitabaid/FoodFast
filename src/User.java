@@ -5,6 +5,6 @@ public class User {
 	public User (String p, String n, String add){
 		phone_num = p;
 		name = n;
-		address = n;
+		address = add;
 	}
 }

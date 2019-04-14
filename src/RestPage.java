@@ -1,11 +1,14 @@
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Image;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import java.awt.event.ActionListener;
@@ -24,6 +27,11 @@ import java.awt.event.ActionEvent;
 import javax.swing.JToggleButton;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import javax.swing.JScrollBar;
+import javax.swing.JList;
+import java.awt.Dimension;
 
 public class RestPage extends JFrame {
 
@@ -90,11 +98,11 @@ public class RestPage extends JFrame {
 		contentPane.setLayout(null);
 
 		JCheckBox chkVeg = new JCheckBox("Veg only");
-		chkVeg.setBounds(24, 20, 129, 23);
+		chkVeg.setBounds(210, 158, 129, 23);
 		contentPane.add(chkVeg);
 
 		JLabel lblFilter = new JLabel("Sort By");
-		lblFilter.setBounds(220, 39, 58, 15);
+		lblFilter.setBounds(32, 134, 58, 15);
 		contentPane.add(lblFilter);
 
 		JButton btnBack = new JButton("Back");
@@ -105,17 +113,28 @@ public class RestPage extends JFrame {
 				dispose();
 			}
 		});
-		btnBack.setBounds(24, 91, 117, 25);
+		btnBack.setBounds(32, 31, 67, 25);
 		contentPane.add(btnBack);
 
-		String attr[] = { "Price" };
+		String attr[] = { "Price", "Popularity" };
 		JComboBox<String> cbFilter = new JComboBox(attr);
-		cbFilter.setBounds(220, 62, 143, 24);
+		cbFilter.setBounds(32, 157, 143, 24);
 		cbFilter.setSelectedIndex(-1);
 		contentPane.add(cbFilter);
 
-		JButton btnApply = new JButton("Apply");
-		btnApply.addActionListener(new ActionListener() {
+		JButton btnSearch = new JButton("");
+		btnSearch.setBounds(347, 141, 40, 40);
+		contentPane.add(btnSearch);
+		// adding icon to search button
+		try {
+			Image img = ImageIO.read(getClass().getResource("resources/search.png"));
+			Image resizedImage = img.getScaledInstance(btnSearch.getWidth(), btnSearch.getHeight(),
+					java.awt.Image.SCALE_SMOOTH);
+			btnSearch.setIcon(new ImageIcon(resizedImage));
+		} catch (Exception ex) {
+			System.out.println(ex);
+		}
+		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int tempIsVeg = 0;
 				String tempSort = cbFilter.getItemAt(cbFilter.getSelectedIndex());
@@ -128,19 +147,28 @@ public class RestPage extends JFrame {
 				dispose();
 			}
 		});
-		btnApply.setBounds(161, 119, 117, 25);
-		contentPane.add(btnApply);
 		String query = "select d_name, price from dish where r_id = " + restaurant.id;
+		
 		if (isVeg == 1 && !sortBy.equals("")) {
 			if (sortBy.equals("Price"))
 				query = "select d_name, price from dish where r_id =" + restaurant.id + " and isVeg = 1 order by "
 						+ sortBy;
 			// @TODO
 			// implement order by popularity
-		} else if (isVeg == 1)
+			else {
+				// sortBy == popularity
+				query = "with dishpop (did, c) as (select d_id, count(d_id) as count from order_has_dishes group by d_id) select d_name, price from dish, dishpop where r_id = "
+						+ restaurant.id + " and dishpop.did = dish.d_id and isVeg = 1 order by c desc";
+			}
+		}if (isVeg == 1 && sortBy.equals(""))
 			query = "select d_name, price from dish where r_id =" + restaurant.id + " and isVeg = 1";
-		else if (!sortBy.equals(""))
+		if (isVeg == 0 && sortBy.equals("Price"))
 			query = "select d_name, price from dish where r_id =" + restaurant.id + " order by " + sortBy;
+		
+		if (isVeg == 0 && sortBy.equals("Popularity"))
+			query = "with dishpop (did, c) as (select d_id, count(d_id) as count from order_has_dishes group by d_id) select d_name, price from dish, dishpop where r_id = "
+					+ restaurant.id + " and dishpop.did = dish.d_id order by c desc";
+		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM", "16181618");
@@ -148,21 +176,27 @@ public class RestPage extends JFrame {
 			ResultSet rs = stmt.executeQuery(query);
 			// build table
 			table = new JTable(buildTableModel(rs));
-			table.setBounds(12, 157, 426, 144);
+			table.setIntercellSpacing(new Dimension(5, 5));
+			table.setShowVerticalLines(false);
+			table.setShowHorizontalLines(false);
+			table.setShowGrid(false);
+			table.setBounds(32, 224, 375, 155);
 			contentPane.add(table);
+			JScrollBar scrollBar = new JScrollBar();
+			scrollBar.setBounds(210, 206, 17, 197);
+			table.add(scrollBar);
 
 			JButton btnRemove = new JButton("Remove seleced item");
 			btnRemove.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if (valueInCell!= null && landing.order.isEmpty()==false) {
-						
-						//check if exists in arraylist, if it does, delete it
+					if (valueInCell != null && landing.order.isEmpty() == false) {
+
+						// check if exists in arraylist, if it does, delete it
 						int i;
-						for (i=0; i< landing.order.size(); i++)
-							if (landing.order.get(i).d_name.compareToIgnoreCase(valueInCell)==0) 
+						for (i = 0; i < landing.order.size(); i++)
+							if (landing.order.get(i).d_name.compareToIgnoreCase(valueInCell) == 0)
 								break;
-						if (i < landing.order.size ())
-						{
+						if (i < landing.order.size()) {
 							if (landing.order.get(i).quantity == 1)
 								landing.order.remove(i);
 							else {
@@ -170,13 +204,13 @@ public class RestPage extends JFrame {
 								otemp.quantity--;
 								landing.order.set(i, otemp);
 							}
-								
+
 						}
-						
+
 					}
 				}
 			});
-			btnRemove.setBounds(24, 337, 183, 25);
+			btnRemove.setBounds(32, 391, 183, 25);
 			contentPane.add(btnRemove);
 
 			JButton btnAdd = new JButton("Add selected item");
@@ -251,30 +285,59 @@ public class RestPage extends JFrame {
 					}
 				}
 			});
-			btnAdd.setBounds(244, 337, 161, 25);
+			btnAdd.setBounds(236, 391, 161, 25);
 			contentPane.add(btnAdd);
-			
+
 			JButton btnCart = new JButton("Cart");
 			btnCart.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					Cart c = new Cart (user, landing, restaurant);
-					c.setVisible (true);
-					dispose ();
+					Cart c = new Cart(user, landing, restaurant);
+					c.setVisible(true);
+					dispose();
 				}
 			});
-			btnCart.setBounds(161, 463, 117, 25);
+			btnCart.setBounds(175, 428, 117, 25);
 			contentPane.add(btnCart);
 
 			JButton btnProfile = new JButton("Profile");
 			btnProfile.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					Profile p = new Profile (user, landing, restaurant);
+					Profile p = new Profile(user, landing, restaurant);
 					p.setVisible(true);
-					dispose ();
+					dispose();
 				}
 			});
-			btnProfile.setBounds(301, 436, 117, 25);
+			btnProfile.setBounds(175, 31, 80, 25);
 			contentPane.add(btnProfile);
+
+			JButton btnLogout = new JButton("Logout");
+			btnLogout.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					LoggedOut d = new LoggedOut();
+					Home h = new Home();
+					h.setVisible(true);
+					dispose();
+				}
+			});
+			btnLogout.setBounds(319, 31, 84, 25);
+			contentPane.add(btnLogout);
+
+			JLabel lblNewLabel = new JLabel("");
+			lblNewLabel.setVerticalAlignment(SwingConstants.TOP);
+			lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 16));
+			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			lblNewLabel.setBounds(12, 93, 426, 55);
+			lblNewLabel.setText(restaurant.name);
+			contentPane.add(lblNewLabel);
+
+			JLabel lblNewLabel_1 = new JLabel("Dish");
+			lblNewLabel_1.setBounds(32, 207, 70, 15);
+			contentPane.add(lblNewLabel_1);
+
+			JLabel lblPrice = new JLabel("Price");
+			lblPrice.setBounds(222, 207, 70, 15);
+			contentPane.add(lblPrice);
+
 			con.commit();
 			con.close();
 		} catch (Exception e) {
@@ -287,7 +350,11 @@ public class RestPage extends JFrame {
 				JTable jTable = (JTable) e.getSource();
 				int row = jTable.getSelectedRow();
 				// extract text of clicked cell
-				valueInCell = (String) jTable.getValueAt(row, 0);
+				try
+				{
+					valueInCell = (String) jTable.getValueAt(row, 0);
+				}
+				catch (ArrayIndexOutOfBoundsException ex) {}
 
 				/**
 				 * try { Class.forName("oracle.jdbc.driver.OracleDriver"); Connection con =
@@ -307,16 +374,4 @@ public class RestPage extends JFrame {
 		});
 
 	}
-	/*
-
-	public void printList(List<Order> l) {
-		int i;
-		Order o;
-		for (i = 0; i < l.size(); i++) {
-			o = l.get(i);
-			System.out.println(
-					o.slNo + " " + o.d_id + " " + o.d_name + " " + o.quantity + " " + o.perprice + " " + o.total);
-		}
-	}
-	*/
 }
