@@ -95,13 +95,17 @@ public class remove_dish extends JFrame {
 			// create statement'
 			Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			
-			String q = "delete from dish where d_id =" +dish_id+" and r_id = " + admin_1.ad_id;
-			ResultSet rs= stmt.executeQuery(q);
+			String q = "delete from dish where d_id =" 	+dish_id+" and r_id = " + admin_1.ad_id;
+			int rowsAffected= stmt.executeUpdate(q);
+			if (rowsAffected == 0)
+				throw new Invalid_Dish_Id ("Enter valid dish ID!");
 			label.setText("Deletion Successful");
 			con.commit ();
 			con.close ();
 		}
-	
+		catch (Invalid_Dish_Id e) {
+			label.setText(e.toString());
+		}
 		catch(Exception e)
 		{
 			label.setText("Deletion Unsuccessful");

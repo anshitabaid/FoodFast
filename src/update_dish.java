@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 
 public class update_dish extends JFrame {
 
@@ -65,7 +66,8 @@ public class update_dish extends JFrame {
 		textField.setColumns(10);
 
 		JLabel label = new JLabel("");
-		label.setBounds(136, 208, 181, 14);
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setBounds(127, 191, 181, 14);
 		panel.add(label);
 
 		JLabel lblNewPrice = new JLabel("New Price");
@@ -106,8 +108,6 @@ public class update_dish extends JFrame {
 					String dish_id = textField.getText();
 					String new_dish_name = textField_2.getText();
 					String p = textField_1.getText();
-					// int admin_id = Integer.parseInt(admin_id1);
-					// String password = String.valueOf(passwordField.getPassword());
 					Class.forName("oracle.jdbc.driver.OracleDriver");
 					// step2 create the connection object
 					Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "SYSTEM",
@@ -125,17 +125,36 @@ public class update_dish extends JFrame {
 					// System.out.println(q);
 					// System.out.println("hello1");
 					try {
-
+						
 						if (dish_id.equals(""))
-							throw new Invalid_Dish_Id("Enter Dish Id");
+							throw new Invalid_Dish_Id("Enter Dish Id!");
 						String k = "select * from dish where d_id =" + dish_id + " and r_id = " + admin_id1;
 						ResultSet rs2 = stmt.executeQuery(k);
 						if (!rs2.next())
-							throw new Invalid_Dish_Id("Enter valid Dish Id!");
+						{
+							throw new Invalid_Dish_Id("Not your dish!");
+						}
 						if ((!new_dish_name.equals("")) && (!p.equals("")))
 							throw new Invalid_Dish_Id("Enter New Dish Name/Price");
+						if (!p.equals("")) {
+							int p1 = Integer.parseInt(p);
+							int d1 = Integer.parseInt (dish_id);
+							String q = "update dish set price = " + p1 + " where d_id = " + d1 + " and r_id = "
+									+ admin_id1;
+							ResultSet rs = stmt.executeQuery(q);
+							label.setText("Updation Successful");
+						}
+
+						if (!new_dish_name.equals("")) {
+							int d1 = Integer.parseInt (dish_id);
+							String q = "update dish set d_name = '" + new_dish_name + "' where d_id = " + dish_id
+									+ " and r_id = " + admin_id1;
+							ResultSet rs = stmt.executeQuery(q);
+							label.setText("Updation Successful");
+						}
 
 					} catch (Invalid_Dish_Id e) {
+						System.out.println (e.toString());
 						label.setText(e.toString());
 					}
 					/*
@@ -146,22 +165,7 @@ public class update_dish extends JFrame {
 					 * } catch(Invalid_Dish_Id e) { label.setText(e.toString()); }
 					 */
 
-					if (!p.equals("")) {
-						int p1 = Integer.parseInt(p);
-						int d1 = Integer.parseInt (dish_id);
-						String q = "update dish set price = " + p1 + " where d_id = " + d1 + " and r_id = "
-								+ admin_id1;
-						ResultSet rs = stmt.executeQuery(q);
-						label.setText("Updation Successful");
-					}
-
-					if (!new_dish_name.equals("")) {
-						int d1 = Integer.parseInt (dish_id);
-						String q = "update dish set d_name = '" + new_dish_name + "' where d_id = " + dish_id
-								+ " and r_id = " + admin_id1;
-						ResultSet rs = stmt.executeQuery(q);
-						label.setText("Updation Successful");
-					}
+					
 					con.commit();
 					con.close();
 				}
