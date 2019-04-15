@@ -155,8 +155,10 @@ public class RestPage extends JFrame {
 						+ sortBy;
 			else {
 				// sortBy == popularity
-				query = "with dishpop (did, c) as (select d_id, count(d_id) as count from order_has_dishes group by d_id) select d_name, price from dish, dishpop where r_id = "
-						+ restaurant.id + " and dishpop.did = dish.d_id and isVeg = 1 order by c desc";
+				query = "with dishpop (did, c) as \n" + 
+						"(select dish.d_id, count(dish.d_id) as count from dish left outer join order_has_dishes on dish.d_id = order_has_dishes.d_id group by dish.d_id)" + 
+						"select d_name, price from dish, dishpop where r_id =" + restaurant.id +  
+						" and dishpop.did = dish.d_id and isVeg = 1 order by c desc";;
 			}
 		}if (isVeg == 1 && sortBy.equals(""))
 			query = "select d_name, price from dish where r_id =" + restaurant.id + " and isVeg = 1";
@@ -164,8 +166,10 @@ public class RestPage extends JFrame {
 			query = "select d_name, price from dish where r_id =" + restaurant.id + " order by " + sortBy;
 		
 		if (isVeg == 0 && sortBy.equals("Popularity"))
-			query = "with dishpop (did, c) as (select d_id, count(d_id) as count from order_has_dishes group by d_id) select d_name, price from dish, dishpop where r_id = "
-					+ restaurant.id + " and dishpop.did = dish.d_id order by c desc";
+			query = "with dishpop (did, c) as \n" + 
+					"(select dish.d_id, count(dish.d_id) as count from dish left outer join order_has_dishes on dish.d_id = order_has_dishes.d_id group by dish.d_id)" + 
+					"select d_name, price from dish, dishpop where r_id =" + restaurant.id +  
+					" and dishpop.did = dish.d_id order by c desc";
 		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");

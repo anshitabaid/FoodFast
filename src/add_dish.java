@@ -137,7 +137,6 @@ public class add_dish extends JFrame {
 							"16181618");
 					Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 					String q = "insert into dish values(null,"+ id_1 + " ,'"+dish_name + "'," + price + "," + type +" )";
-					System.out.println(q);
 					ResultSet rs = stmt.executeQuery(q);
 					/*String x = "select * from dish where d_id = " + dish_id + "'";
 					rs = stmt.executeQuery(x);

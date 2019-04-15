@@ -56,20 +56,20 @@ public class Admin_login extends JFrame {
 		panel.setLayout(null);
 		
 		JLabel lblUsername = new JLabel("Username");
-		lblUsername.setBounds(110, 45, 72, 15);
+		lblUsername.setBounds(120, 73, 72, 15);
 		panel.add(lblUsername);
 		
 		textField = new JTextField();
-		textField.setBounds(197, 43, 86, 20);
+		textField.setBounds(207, 71, 86, 20);
 		panel.add(textField);
 		textField.setColumns(10);
 		
 		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(110, 100, 70, 15);
+		lblPassword.setBounds(120, 128, 70, 15);
 		panel.add(lblPassword);
 		
 		JButton btnLogin = new JButton("Login");
-		btnLogin.setBounds(157, 158, 89, 23);
+		btnLogin.setBounds(157, 188, 89, 23);
 		panel.add(btnLogin);
 		
 		JLabel lblNewLabel = new JLabel("");
@@ -78,7 +78,7 @@ public class Admin_login extends JFrame {
 		panel.add(lblNewLabel);
 		
 		passwordField = new JPasswordField();
-		passwordField.setBounds(197, 98, 86, 20);
+		passwordField.setBounds(207, 126, 86, 20);
 		panel.add(passwordField);
 		
 		JLabel lblAdminAccess = new JLabel("Admin Access");
